@@ -145,8 +145,7 @@ function finish()
                 addEmployee();
             }
             else{
-                //TODO call render i think
-                console.log("Noice everyones added");
+                fs.writeFile(outputPath, render(employees), 'utf8',  (err) => err ? console.error(err) : console.log('Success! Team page created!'));
             }
         })
 }
