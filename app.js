@@ -9,11 +9,149 @@ const OUTPUT_DIR = path.resolve(__dirname, "output");
 const outputPath = path.join(OUTPUT_DIR, "team.html");
 
 const render = require("./lib/htmlRenderer");
+const { listenerCount } = require("events");
 
-
+const employeeTypes = ["Manager", "Engineer", "Intern"];
+const employees= [];
 // Write code to use inquirer to gather information about the development team members,
 // and to create objects for each team member (using the correct classes as blueprints!)
+function addEmployee(){
+    inquirer    
+        .prompt([
+            {
+                type: 'list',
+                message: "What type of employee would you like to add?",
+                choices: employeeTypes,
+                name: 'employee',
+            },
+        ]).then(data =>{
+            switch(data.employee){
+                case("Manager"):
+                    addManager()
+                    break;            
+                case("Engineer"):
+                    addEngineer()
+                    break;            
+                case("Intern"):
+                    addIntern()
+                    break;
+            }
+        });
+}
 
+function addManager(){
+    console.log("Manager");
+    inquirer    
+        .prompt([
+            {
+                type: "input",
+                message: "Whats the name of your manager?",
+                name: "name",
+            },
+            {
+                type: "input",
+                message: "Whats the managers Id number?",
+                name: "id",
+            },
+            {
+                type: "input",
+                message: "Whats the managers email?",
+                name: "email",
+            },
+            {
+                type: "input",
+                message: "Whats the managers office number?",
+                name: "office",
+            },
+        ]).then(data =>{
+            employees.push(new Manager(data.name, data.id, data.email, data.office));
+            finish();
+
+        });
+}
+
+function addEngineer(){
+    console.log("Engineer");
+    inquirer    
+        .prompt([
+            {
+                type: "input",
+                message: "Whats the name of your engineer?",
+                name: "name",
+            },
+            {
+                type: "input",
+                message: "Whats the engineers Id number?",
+                name: "id",
+            },
+            {
+                type: "input",
+                message: "Whats the engineers email?",
+                name: "email",
+            },
+            {
+                type: "input",
+                message: "Whats the engineers github username?",
+                name: "github",
+            },
+        ]).then(data =>{
+            employees.push(new Engineer(data.name, data.id, data.email, data.github));
+            finish();
+
+        });
+}
+
+function addIntern(){
+    console.log("Intern");
+    inquirer    
+        .prompt([
+            {
+                type: "input",
+                message: "Whats the name of your intern?",
+                name: "name",
+            },
+            {
+                type: "input",
+                message: "Whats the interns Id number?",
+                name: "id",
+            },
+            {
+                type: "input",
+                message: "Whats the interns email?",
+                name: "email",
+            },
+            {
+                type: "input",
+                message: "What school is the intern attending?",
+                name: "school",
+            },
+        ]).then(data =>{
+            employees.push(new Intern(data.name, data.id, data.email, data.school));
+            finish();
+        });
+}
+
+function finish()
+{
+    inquirer
+        .prompt([
+            {
+                type: "confirm",
+                message: "Would you like to add another employee?",
+                name: "confirmation",
+            }
+        ]).then(data => {
+            if(data.confirmation){
+                addEmployee();
+            }
+            else{
+                //TODO call render i think
+                console.log("Noice everyones added");
+            }
+        })
+}
+
+addEmployee();
 // After the user has input all employees desired, call the `render` function (required
 // above) and pass in an array containing all employee objects; the `render` function will
 // generate and return a block of HTML including templated divs for each employee!
