@@ -55,7 +55,7 @@ function addManager(){
             },
             {
                 type: "input",
-                message: "Whats the managers email?",
+                message: "Whats the managers email? (ex. email@email.com)",
                 name: "email",
             },
             {
@@ -64,9 +64,14 @@ function addManager(){
                 name: "office",
             },
         ]).then(data =>{
-            employees.push(new Manager(data.name, data.id, data.email, data.office));
-            finish();
-
+            if(!checkGeneralInfo(data) || !checkOfficeNumber(data.office))
+            {
+                addManager();
+            }
+            else{
+                employees.push(new Manager(data.name, data.id, data.email, data.office));
+                finish();
+            }
         });
 }
 
@@ -86,7 +91,7 @@ function addEngineer(){
             },
             {
                 type: "input",
-                message: "Whats the engineers email?",
+                message: "Whats the engineers email? (ex. email@email.com)",
                 name: "email",
             },
             {
@@ -95,8 +100,14 @@ function addEngineer(){
                 name: "github",
             },
         ]).then(data =>{
-            employees.push(new Engineer(data.name, data.id, data.email, data.github));
-            finish();
+            if(!checkGeneralInfo(data) || !checkGithubUsername(data.github))
+            {
+                addEngineer();
+            }
+            else{
+                employees.push(new Engineer(data.name, data.id, data.email, data.github));
+                finish();
+            }
 
         });
 }
@@ -117,7 +128,7 @@ function addIntern(){
             },
             {
                 type: "input",
-                message: "Whats the interns email?",
+                message: "Whats the interns email? (ex. email@email.com)",
                 name: "email",
             },
             {
@@ -126,8 +137,14 @@ function addIntern(){
                 name: "school",
             },
         ]).then(data =>{
-            employees.push(new Intern(data.name, data.id, data.email, data.school));
-            finish();
+            if(!checkGeneralInfo(data) || !checkSchool(data.school))
+            {
+                addIntern();
+            }
+            else{
+                employees.push(new Intern(data.name, data.id, data.email, data.school));
+                finish();
+            }
         });
 }
 
@@ -150,6 +167,53 @@ function finish()
         })
 }
 
+function checkGeneralInfo(data){
+    if(!data.name)
+    {
+        console.error("\x1b[31m", "Please enter a valid name.");
+        return false;
+    }
+    if(!data.id || isNaN(data.id)){
+        console.error("\x1b[31m", "Please enter a valid id.");
+        return false;
+    }
+    if(!validateEmail(data.email))
+    {
+        console.error("\x1b[31m", "Please enter a valid email.");
+        return false;
+    }
+    return true;
+}
+
+function checkOfficeNumber(num){
+    if(isNaN(num)){
+        console.error("\x1b[31m", "Please enter a valid office number.");
+        return false;
+    }
+    return true;
+}
+
+function checkGithubUsername(user){
+    if(!user){
+        console.error("\x1b[31m", "Please enter a valid Github username.");
+        return false;
+    }
+    return true;
+}
+
+function checkSchool(school){
+    if(!school){
+        console.error("\x1b[31m", "Please enter a valid school.");
+        return false;
+    }
+    return true;
+}
+
+function validateEmail(email) {
+    const re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return re.test(email);
+}
+
 addEmployee();
 // After the user has input all employees desired, call the `render` function (required
 // above) and pass in an array containing all employee objects; the `render` function will
@@ -169,4 +233,4 @@ addEmployee();
 // and Intern classes should all extend from a class named Employee; see the directions
 // for further information. Be sure to test out each class and verify it generates an
 // object with the correct structure and methods. This structure will be crucial in order
-// for the provided `render` function to work! ```
+// for the provided `render` function to work! 
